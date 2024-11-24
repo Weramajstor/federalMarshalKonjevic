@@ -6,18 +6,27 @@ from torch_geometric.data import Data#, DataLoader
 from torch_geometric.loader import DataLoader 
 from torch_geometric.nn import GCNConv
 
-# Set device (GPU or CPU)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-#device = torch.device("cpu")
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--num_features", type=int, default=10)
+parser.add_argument("--device", type=str, default="cuda:0")
+parser.add_argument("--batch_size", type=str, default=1024)
+parser.add_argument("--verbose", action="store_true")
+args = parser.parse_args()
+
+print(args.num_features, args.device, args.batch_size, args.verbose)
+
+device = torch.device(args.device)
+
 print(f"Using device: {device}")
 
 num_epochs=100
-velicina_batcha=1024
-#torch.manual_seed(42)
+velicina_batcha=args.batch_size
 
-# Define variables
+
 rucne_znacajke_dim = 2
-emb_dim = 8
+emb_dim = args.num_features
 
 
 def parse_coverage_file(file_path):
@@ -218,7 +227,7 @@ coverage_list = parse_coverage_file("coverage.txt")
 
 input_dim = emb_dim
 hidden_dim = 128 
-output_dim = 8
+output_dim = args.num_features
 
 model = GCN(input_dim, hidden_dim, output_dim, num_layers=8)
 model = model.to(device)
