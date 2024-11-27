@@ -220,12 +220,9 @@ def train(model, data, optimizer):
 
 
 def create_support_list(data_list):
-
     support_list=[]
-
     for data in data_list:
         n=data.x.size(0)
-
         # Create the new Data object
         new_data = Data(
             x=data.x,
@@ -306,6 +303,11 @@ with torch.no_grad():
         suma += initial_loss.item()
     print(f'Initial Average Loss for a graph before training: {suma / len(train_list)}')
 
+import wandb
+
+# Initialize wandb
+wandb.init(project="ris_koji_se_zove_zemris")
+
 
 # Training loop with batches
 for epoch in range(num_epochs):
@@ -321,11 +323,11 @@ for epoch in range(num_epochs):
         loss.backward()
 
         print(output_features)
-
         
         for name, param in model.named_parameters():
             if param.grad is not None:  # Ensure the parameter has a gradient
-                print(f"Gradient for {name}: {param.grad}")  # Print the gradient
+                print(f"Gradient for {name}: {param.grad}") 
+                #wandb.log({f"gradient/{name}": wandb.Histogram(param.grad.cpu().numpy())})  # Print the gradient
         
         exit(0)
         
