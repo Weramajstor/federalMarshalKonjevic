@@ -354,7 +354,7 @@ def initialize_model_parameters(model, load_model_parameters_from_file):
 def reproducibility_settings(reproducible):
     import random
     if reproducible:
-        seed = 42
+        seed = 1944
         random.seed(seed)
         torch.manual_seed(seed)
         torch.cuda.manual_seed_all(seed)  # If using CUDA

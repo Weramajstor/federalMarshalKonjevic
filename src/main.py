@@ -10,15 +10,15 @@ from models import *
 parser = argparse.ArgumentParser()
 parser.add_argument("--num_features", type=int, default=10)
 parser.add_argument("--device", type=str, default="cpu")
-parser.add_argument("--lr", type=float, default=0.0001)
+parser.add_argument("--lr", type=float, default=0.0003)
 parser.add_argument("--batch_size", type=int, default=1)
-parser.add_argument("--load_model_parameters_from_file", type=bool, default=True)
+parser.add_argument("--load_model_parameters_from_file", type=bool, default=False)
 parser.add_argument("--wandb_log", type=bool, default=True)
 parser.add_argument("--model_type", type=str, default="sage")
 parser.add_argument("--embedding_type", type=str, default="zeros")
 parser.add_argument("--loss_type", type=str, default="unsupervised")
-parser.add_argument("--num_epochs", type=int, default=102)
-parser.add_argument("--reproducible", type=bool, default=True)
+parser.add_argument("--num_epochs", type=int, default=100)
+parser.add_argument("--reproducible", type=bool, default=False)
 args = parser.parse_args()
 
 if args.wandb_log:
@@ -36,8 +36,8 @@ validation_list = parse_graph_file('validation.txt', args.num_features, args.emb
 coverage_list = parse_coverage_file("coverage.txt")
 
 input_dim = args.num_features
-hidden_dim = 32
-output_dim = 16
+hidden_dim = 128
+output_dim = 64
 model = GNNModel( args.model_type, input_dim, hidden_dim, output_dim, num_layers=5)
 
 lowest_optimality_gap = initialize_model_parameters(model, args.load_model_parameters_from_file)#this sets model parameters
@@ -70,7 +70,7 @@ for epoch in range(args.num_epochs):
             print(batch_train.to_data_list()[0].y)
     
     #logging and validation
-    if epoch % 5 == 0:
+    if epoch % 1 == 0:
         print(f'Epoch {epoch + 1}')
         print(f'Average Train Loss: {local_train_loss}')
         """

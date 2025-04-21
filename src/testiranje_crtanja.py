@@ -9,13 +9,14 @@ parser.add_argument("--num_features", type=int, default=10)
 parser.add_argument("--load_model_parameters_from_file", type=bool, default=True)
 parser.add_argument("--model_type", type=str, default="sage")
 parser.add_argument("--embedding_type", type=str, default="zeros")
-parser.add_argument("--reproducible", type=bool, default=False)
+parser.add_argument("--reproducible", type=bool, default=True)
 args = parser.parse_args()
 
+reproducibility_settings(args.reproducible)
 
 input_dim = args.num_features
-hidden_dim = 32
-output_dim = 16
+hidden_dim = 128
+output_dim = 64
 model = GNNModel( args.model_type, input_dim, hidden_dim, output_dim, num_layers=5)
 a=initialize_model_parameters(model, args.load_model_parameters_from_file)
 print("optimalitygap " + str(a))

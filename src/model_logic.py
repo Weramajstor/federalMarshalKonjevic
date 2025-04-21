@@ -71,21 +71,18 @@ def bridge_number_expectancy(probs, set_cover_data, node_number):
 
 def solution_value_expectancy( probs, augmenting_edge_weights ):
     deduplicated_aug_edge_weights = augmenting_edge_weights[::2]#cause its 1d
-    #print(probs)
-    #print(deduplicated_aug_edge_weights)
     return (probs * deduplicated_aug_edge_weights).sum()#sum itself
 
 #i think this only supports batch_size 1, currently
 def unsupervised_erdos_loss(node_features, augmenting_edge_index, augmenting_edge_weights, set_cover_data, verbose=False):
     deduplicated_aug_ei = augmenting_edge_index[:, ::2]
     logits = edge_logits(node_features, deduplicated_aug_ei)
-    probs = torch.sigmoid(logits)
-    
+    probs = torch.sigmoid(torch.clamp(logits, -10, 10))
+
     if verbose:
         print("E(sol_val)")
         print(solution_value_expectancy(probs, augmenting_edge_weights))
         print("E(bridge_number)")
         print(bridge_number_expectancy(probs, set_cover_data, node_features.shape[0]))
-    
-    
+
     return solution_value_expectancy(probs, augmenting_edge_weights) + bridge_number_expectancy(probs, set_cover_data, node_features.shape[0])
